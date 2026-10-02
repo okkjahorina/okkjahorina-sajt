@@ -6,8 +6,14 @@
 <meta name="description" content="Omladinski košarkaški klub Jahorina Pale – škola košarke, selekcije, raspored, rezultati i upis.">
 <link rel="icon" href="icon.webp">
 <link rel="apple-touch-icon" href="icon.webp">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://okkjahorina.com/">
 <meta property="og:title" content="OKK Jahorina Pale">
-<meta property="og:image" content="https://okkjahorina.com/crest.webp">
+<meta property="og:description" content="Omladinski košarkaški klub Jahorina Pale. Upis je otvoren, prvi mjesec je besplatan.">
+<meta property="og:image" content="https://okkjahorina.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <title>OKK Jahorina Pale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +177,18 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
 .lb img{max-height:88vh;max-width:100%;border-radius:4px}
 .lb button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;background:var(--red);color:#fff;border:0;border-radius:4px;font:800 1rem var(--display);padding:10px 14px;cursor:pointer;text-transform:uppercase}
 #social a{color:var(--snow)}
+.sharebtn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1.5px solid var(--ice);color:var(--ice);border-radius:4px;padding:7px 12px;font:800 .95rem/1 var(--display);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.sharebtn:hover{background:#4fc3ff1a}
+.sharebtn svg{width:15px;height:15px}
+@media (max-width:720px){.sharebtn{margin-left:auto}}
+.post .sharebtn{justify-self:start;margin:4px 0 0;color:var(--royal);border-color:var(--royal);padding:6px 10px;font-size:.85rem}
+.sheet{position:fixed;inset:0;z-index:60;background:#000a;display:grid;place-items:end center;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet>div{background:var(--navy-2);border:1px solid #ffffff1f;border-radius:8px;padding:20px;width:100%;max-width:420px;display:grid;gap:10px}
+.sheet h3{font-size:1.5rem;font-weight:800}
+.sheet a,.sheet button{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:4px;border:0;font:700 1rem var(--body);text-decoration:none;cursor:pointer;color:#fff}
+.sheet .fb{background:#1877F2}.sheet .wa{background:#1DA851}.sheet .vb{background:#7360F2}.sheet .cp{background:var(--royal)}
+.sheet .x{background:transparent;color:var(--steel)}
+.sheet input{font:400 .9rem var(--body);color:var(--snow);background:var(--navy);border:1px solid #ffffff2e;border-radius:4px;padding:10px}
 </style>
 </head>
 <body>
@@ -182,6 +200,7 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
     <div class="links">
       <a href="#klub">Klub</a><a href="#selekcije">Selekcije</a><a href="#vijesti">Vijesti</a><a href="#utakmice">Utakmice</a><a href="#galerija">Galerija</a><a href="#upis">Upis</a><a href="#sponzori">Sponzori</a><a href="#kontakt">Kontakt</a>
     </div>
+    <button class="sharebtn" type="button" data-share aria-label="Podijeli sajt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Podijeli</button>
   </div>
 </nav>
 
@@ -379,7 +398,8 @@ const get=async n=>{try{const r=await fetch('data/'+n+'.json',{cache:'no-cache'}
   }
   if(Array.isArray(vi)&&vi.length){
     vi.sort((a,b)=>(pd(b.datum)||0)-(pd(a.datum)||0));
-    document.getElementById('news').innerHTML=vi.map(p=>`<article class="post">${p.slika?`<img src="${img(p.slika)}" alt="" loading="lazy">`:''}<div><time>${fd(pd(p.datum))}</time><h3>${esc(p.naslov)}</h3><p>${esc(p.tekst)}</p></div></article>`).join('');
+    document.getElementById('news').innerHTML=vi.map(p=>`<article class="post" id="${slug(p.naslov)}">${p.slika?`<img src="${img(p.slika)}" alt="" loading="lazy">`:''}<div><time>${fd(pd(p.datum))}</time><h3>${esc(p.naslov)}</h3><p>${esc(p.tekst)}</p><button class="sharebtn" type="button" data-share="${slug(p.naslov)}" data-title="${esc(p.naslov)}">Podijeli vijest</button></div></article>`).join('');
+    if(location.hash.length>1){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView()}
   }
   if(Array.isArray(ga)&&ga.length){
     ga.sort((a,b)=>(pd(b.datum)||0)-(pd(a.datum)||0));
@@ -396,7 +416,21 @@ document.addEventListener('click',e=>{
   const lb=document.createElement('div');lb.className='lb';lb.innerHTML=`<img src="${b.dataset.src}" alt=""><button type="button">Zatvori</button>`;
   lb.addEventListener('click',()=>lb.remove());document.body.appendChild(lb);
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelector('.lb')?.remove()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelector('.lb')?.remove();document.querySelector('.sheet')?.remove()}});
+function slug(s){const m={'č':'c','ć':'c','đ':'dj','š':'s','ž':'z'};return 'vijest-'+String(s||'').toLowerCase().replace(/[čćđšž]/g,c=>m[c]).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-share]');if(!b)return;
+  const url='https://okkjahorina.com/'+(b.dataset.share?'#'+b.dataset.share:''),title=b.dataset.title||'OKK Jahorina Pale';
+  if(navigator.share&&matchMedia('(pointer:coarse)').matches){try{await navigator.share({title,url});return}catch(err){if(err.name==='AbortError')return}}
+  const u=encodeURIComponent(url),t=encodeURIComponent(title+' '+url);
+  const s=document.createElement('div');s.className='sheet';
+  s.innerHTML=`<div role="dialog" aria-label="Podijeli"><h3>Podijeli</h3><a class="fb" href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener">Facebook</a><a class="wa" href="https://wa.me/?text=${t}" target="_blank" rel="noopener">WhatsApp</a><a class="vb" href="viber://forward?text=${t}">Viber</a><input readonly value="${url}" aria-label="Link"><button class="cp" type="button">Kopiraj link</button><button class="x" type="button">Zatvori</button></div>`;
+  s.addEventListener('click',async ev=>{
+    if(ev.target===s||ev.target.classList.contains('x')){s.remove();return}
+    if(ev.target.classList.contains('cp')){const i=s.querySelector('input');try{await navigator.clipboard.writeText(url);ev.target.textContent='Link je kopiran'}catch(_){i.select();ev.target.textContent='Označeno, kopiraj sa Cmd+C'}}
+  });
+  document.body.appendChild(s);
+});
 </script>
 
 </body>
