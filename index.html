@@ -281,22 +281,22 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
       <p class="lede">Upis traje tokom cijele sezone. Prvi mjesec je besplatan, pa dijete može da proba prije nego što se odlučite.</p>
       <ol class="steps">
         <li><span><b>Popuni prijavu</b> ovdje na stranici.</span></li>
-        <li><span><b>Kopiraj je i pošalji</b> klubu porukom ili mejlom.</span></li>
+        <li><span><b>Pošalji je</b> jednim klikom, stiže direktno klubu.</span></li>
         <li><span><b>Javljamo se</b> sa terminom prvog treninga.</span></li>
       </ol>
     </div>
-    <form id="prijava" novalidate>
+    <form id="prijava" name="upis" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate><input type="hidden" name="form-name" value="upis"><p hidden><label>Ne popunjavaj<input name="bot-field"></label></p>
       <div class="row">
-        <label for="ime">Ime i prezime djeteta<input id="ime" required autocomplete="off"></label>
-        <label for="god">Godina rođenja<input id="god" inputmode="numeric" maxlength="4" placeholder="npr. 2016" required></label>
+        <label for="ime">Ime i prezime djeteta<input id="ime" name="dijete" required autocomplete="off"></label>
+        <label for="god">Godina rođenja<input id="god" name="godiste" inputmode="numeric" maxlength="4" placeholder="npr. 2016" required></label>
       </div>
       <div class="row">
-        <label for="rod">Ime roditelja<input id="rod" required></label>
-        <label for="tel">Telefon roditelja<input id="tel" type="tel" required></label>
+        <label for="rod">Ime roditelja<input id="rod" name="roditelj" required></label>
+        <label for="tel">Telefon roditelja<input id="tel" name="telefon" type="tel" required></label>
       </div>
-      <label for="sel">Selekcija<select id="sel"><option>Škola košarke (U8–U12)</option><option>Pioniri (U14)</option><option>Kadeti i juniori (U16–U18)</option><option>Seniori</option></select></label>
-      <label for="nap">Napomena<textarea id="nap" placeholder="Iskustvo, pitanja..."></textarea></label>
-      <button class="cta" type="submit">Pripremi prijavu</button>
+      <label for="sel">Selekcija<select id="sel" name="selekcija"><option>Škola košarke (U8–U12)</option><option>Pioniri (U14)</option><option>Kadeti i juniori (U16–U18)</option><option>Seniori</option></select></label>
+      <label for="nap">Napomena<textarea id="nap" name="napomena" placeholder="Iskustvo, pitanja..."></textarea></label>
+      <button class="cta" type="submit">Pošalji prijavu</button>
       <p id="err" role="alert" style="margin:0;color:var(--red)" hidden>Popuni ime djeteta, godinu rođenja, ime roditelja i telefon.</p>
       <div class="out" id="out" hidden>
         <pre id="txt"></pre>
@@ -343,8 +343,12 @@ f.addEventListener('submit',e=>{
   const v=id=>document.getElementById(id).value.trim();
   if(!v('ime')||!/^\d{4}$/.test(v('god'))||!v('rod')||!v('tel')){err.hidden=false;out.hidden=true;return}
   err.hidden=true;
+  const btn=f.querySelector('button[type=submit]'),cp=document.getElementById('copy'),msg=document.getElementById('copied');btn.disabled=true;btn.textContent='Šaljem...';
   txt.textContent=`Prijava za Omladinski košarkaški klub Jahorina Pale\nDijete: ${v('ime')} (${v('god')})\nSelekcija: ${v('sel')}\nRoditelj: ${v('rod')}, tel. ${v('tel')}`+(v('nap')?`\nNapomena: ${v('nap')}`:'');
-  out.hidden=false;
+  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(f)).toString()})
+    .then(r=>{if(!r.ok)throw 0;msg.textContent='Prijava je poslana. Javićemo vam se uskoro.';cp.hidden=true;f.querySelectorAll('input:not([type=hidden]),textarea').forEach(i=>i.value='')})
+    .catch(()=>{msg.textContent='Slanje nije uspjelo. Kopiraj prijavu i pošalji je klubu porukom.';cp.hidden=false})
+    .finally(()=>{out.hidden=false;btn.disabled=false;btn.textContent='Pošalji prijavu'});
 });
 document.getElementById('copy').addEventListener('click',async()=>{
   const c=document.getElementById('copied');
