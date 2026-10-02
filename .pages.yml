@@ -1,0 +1,112 @@
+media:
+  input: slike
+  output: /slike
+  categories: [image]
+
+content:
+  - name: utakmice
+    label: Utakmice i rezultati
+    type: file
+    path: data/utakmice.json
+    format: json
+    list: true
+    fields:
+      - name: datum
+        label: Datum
+        type: date
+        required: true
+      - name: vrijeme
+        label: Vrijeme (npr. 18:00)
+        type: string
+      - name: selekcija
+        label: Selekcija
+        type: select
+        options:
+          values: [Seniori, Juniori U18, Kadeti U16, Pioniri U14, Škola košarke]
+      - name: protivnik
+        label: Protivnik
+        type: string
+        required: true
+      - name: teren
+        label: Domaći ili gosti
+        type: select
+        options:
+          values: [Domaći, Gosti]
+      - name: mjesto
+        label: Dvorana / mjesto
+        type: string
+      - name: nasi_poeni
+        label: Naši poeni (prazno dok se ne odigra)
+        type: number
+      - name: njihovi_poeni
+        label: Poeni protivnika (prazno dok se ne odigra)
+        type: number
+
+  - name: vijesti
+    label: Vijesti
+    type: file
+    path: data/vijesti.json
+    format: json
+    list: true
+    fields:
+      - name: naslov
+        label: Naslov
+        type: string
+        required: true
+      - name: datum
+        label: Datum
+        type: date
+        required: true
+      - name: slika
+        label: Slika
+        type: image
+      - name: tekst
+        label: Tekst
+        type: text
+
+  - name: galerija
+    label: Galerija
+    type: file
+    path: data/galerija.json
+    format: json
+    list: true
+    fields:
+      - name: naziv
+        label: Naziv albuma
+        type: string
+        required: true
+      - name: datum
+        label: Datum
+        type: date
+      - name: slike
+        label: Slike
+        type: image
+        list: true
+
+  - name: kontakt
+    label: Kontakt
+    type: file
+    path: data/kontakt.json
+    format: json
+    fields:
+      - name: telefon
+        label: Telefon
+        type: string
+      - name: telefon_napomena
+        label: Kad se javljate (npr. radnim danima 16–20 h)
+        type: string
+      - name: email
+        label: E-mail
+        type: string
+      - name: dvorana
+        label: Dvorana
+        type: string
+      - name: adresa
+        label: Adresa / napomena
+        type: string
+      - name: instagram
+        label: Instagram link
+        type: string
+      - name: facebook
+        label: Facebook link
+        type: string
