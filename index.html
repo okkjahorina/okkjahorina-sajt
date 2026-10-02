@@ -381,8 +381,9 @@ const MJ=['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pd=d=>{if(!d)return null;const m=String(d).match(/(\d{4})-(\d{2})-(\d{2})/);return m?new Date(+m[1],m[2]-1,+m[3]):null};
 const fd=d=>d?`${d.getDate()}. ${MJ[d.getMonth()]} ${d.getFullYear()}.`:'';
-const img=p=>p?esc(String(p).replace(/^\//,'')):'';
-const get=async n=>{try{const r=await fetch('data/'+n+'.json',{cache:'no-cache'});if(!r.ok)return null;return await r.json()}catch(_){return null}};
+const RAW='https://raw.githubusercontent.com/okkjahorina/okkjahorina-sajt/main/';
+const img=p=>{if(!p)return '';const s=String(p);return esc(/^https?:/.test(s)?s:RAW+s.replace(/^\//,''))};
+const get=async n=>{for(const u of [RAW+'data/'+n+'.json','data/'+n+'.json']){try{const r=await fetch(u,{cache:'no-cache'});if(r.ok)return await r.json()}catch(_){}}return null};
 (async()=>{
   const [ut,vi,ga,ko]=await Promise.all(['utakmice','vijesti','galerija','kontakt'].map(get));
   if(Array.isArray(ut)&&ut.length){
