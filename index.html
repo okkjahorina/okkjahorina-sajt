@@ -177,6 +177,8 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
 .lb img{max-height:88vh;max-width:100%;border-radius:4px}
 .lb button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;background:var(--red);color:#fff;border:0;border-radius:4px;font:800 1rem var(--display);padding:10px 14px;cursor:pointer;text-transform:uppercase}
 #social a{color:var(--snow)}
+.maplink{display:inline-block;margin-top:10px;color:var(--ice);font-weight:700;text-decoration:none;border-bottom:1.5px solid currentColor}
+.maplink:hover{color:var(--snow)}
 .sharebtn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1.5px solid var(--ice);color:var(--ice);border-radius:4px;padding:7px 12px;font:800 .95rem/1 var(--display);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .sharebtn:hover{background:#4fc3ff1a}
 .sharebtn svg{width:15px;height:15px}
@@ -346,7 +348,7 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
     <h2>Javi se čoporu</h2>
     <div class="contact" id="contact">
       <div><h3>E-mail</h3><p data-k="email">Uskoro</p><p class="muted">Upis, sponzorstva, mediji</p></div>
-      <div><h3>Dvorana</h3><p data-k="dvorana">Pale</p><p class="muted" data-k="adresa">Tačna adresa i termini pri upisu</p></div>
+      <div><h3>Dvorana</h3><p data-k="dvorana">Pale</p><p class="muted" data-k="adresa">Tačna adresa i termini pri upisu</p><a class="maplink" id="mapa" href="https://www.google.com/maps" target="_blank" rel="noopener" hidden>Otvori na mapi →</a></div>
     </div>
   </div>
 </section>
@@ -407,6 +409,7 @@ const get=async n=>{try{const r=await fetch('data/'+n+'.json',{cache:'no-cache'}
   }
   if(ko&&typeof ko==='object'){
     document.querySelectorAll('[data-k]').forEach(el=>{const v=ko[el.dataset.k];if(v)el.textContent=v});
+    if(ko.dvorana||ko.adresa){const m=document.getElementById('mapa');m.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([ko.dvorana,ko.adresa,'Pale'].filter(Boolean).join(', '));m.hidden=false}
     const so=[['Instagram',ko.instagram],['Facebook',ko.facebook]].filter(x=>x[1]);
     document.getElementById('social').innerHTML=so.map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${n}</a>`).join(' · ');
   }
