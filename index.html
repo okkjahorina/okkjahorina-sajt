@@ -61,6 +61,12 @@ nav.top .wrap{display:flex;align-items:center;gap:20px;min-height:60px;flex-wrap
 .hero p{max-width:46ch;color:var(--steel);font-size:1.1rem;margin:20px 0 28px}
 .hero .btns{display:flex;gap:12px;flex-wrap:wrap}
 .crest{justify-self:center;width:100%;max-width:400px;filter:drop-shadow(0 30px 40px #0008)}
+.slides{display:grid}
+.slide{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s .6s}
+.slide.on{opacity:1;visibility:visible;transition:opacity .6s ease}
+.dots{display:flex;gap:8px;margin-top:22px}
+.dots button{width:28px;height:5px;border:0;border-radius:3px;background:#ffffff33;cursor:pointer;padding:0}
+.dots button.on{background:var(--ice)}
 .facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:36px;padding-top:22px;border-top:1px solid #ffffff1f}
 .facts div{font-family:var(--display);font-size:2rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
 .facts small{display:block;font:500 .72rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-top:6px}
@@ -218,13 +224,27 @@ footer .wrap{display:flex;gap:16px;align-items:center;justify-content:space-betw
   </svg>
   <div class="wrap">
     <div>
-      <p class="eyebrow">Omladinski košarkaški klub Jahorina · Pale</p>
-      <h1>Upis je<span>otvoren</span></h1>
-      <p>Novi košarkaški klub sa Pala. Gradimo ekipu od škole košarke do seniora, uz trenere koji rade sa djecom. Prvi mjesec treninga je besplatan.</p>
-      <div class="btns">
-        <a class="cta" href="#upis">Upiši dijete</a>
-        <a class="cta ghost" href="#utakmice">Raspored utakmica</a>
+      <div class="slides" id="slides">
+        <div class="slide on">
+          <p class="eyebrow">Prva liga Republike Srpske · 1. kolo</p>
+          <h1>Kreće<span>prvo kolo</span></h1>
+          <p>U nedjelju, 18. oktobra u 18:00, u Sportskoj dvorani „Peki“ dočekujemo KK Una. Dođite i budite uz Jahorinu od prve minute! Utakmica se prenosi uživo na YouTube-u.</p>
+          <div class="btns">
+            <a class="cta" href="#utakmice">Raspored utakmica</a>
+            <a class="cta ghost" href="#vijesti">Pročitaj vijest</a>
+          </div>
+        </div>
+        <div class="slide" aria-hidden="true">
+          <p class="eyebrow">Omladinski košarkaški klub Jahorina · Pale</p>
+          <h1>Upis je<span>otvoren</span></h1>
+          <p>Novi košarkaški klub sa Pala. Gradimo ekipu od škole košarke do seniora, uz trenere koji rade sa djecom. Prvi mjesec treninga je besplatan.</p>
+          <div class="btns">
+            <a class="cta" href="#upis">Upiši dijete</a>
+            <a class="cta ghost" href="#utakmice">Raspored utakmica</a>
+          </div>
+        </div>
       </div>
+      <div class="dots" id="dots" role="tablist" aria-label="Naslovne vijesti"><button type="button" class="on" aria-label="Prvo kolo"></button><button type="button" aria-label="Upis je otvoren"></button></div>
       <div class="facts">
         <div>2026<small>Osnovan</small></div>
         <div>4<small>Selekcije</small></div>
@@ -437,5 +457,12 @@ document.addEventListener('click',async e=>{
 });
 </script>
 
+<script>
+(()=>{const sl=[...document.querySelectorAll('#slides .slide')],dt=[...document.querySelectorAll('#dots button')];if(sl.length<2)return;let i=0,t;
+const go=n=>{i=(n+sl.length)%sl.length;sl.forEach((s,k)=>{s.classList.toggle('on',k===i);s.setAttribute('aria-hidden',k!==i)});dt.forEach((d,k)=>d.classList.toggle('on',k===i))};
+const start=()=>{clearInterval(t);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)t=setInterval(()=>go(i+1),6000)};
+dt.forEach((d,k)=>d.addEventListener('click',()=>{go(k);start()}));
+const h=document.getElementById('slides');h.addEventListener('mouseenter',()=>clearInterval(t));h.addEventListener('mouseleave',start);start()})();
+</script>
 </body>
 </html>
